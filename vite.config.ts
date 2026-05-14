@@ -206,18 +206,11 @@ function vitePluginStorageProxy(): Plugin {
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), vitePluginStorageProxy()];
 
 export default defineConfig({
-  // Auto compute base for GitHub Pages deployments:
-  // - If VITE_BASE env is provided, use it (manual override)
-  // - If running in GitHub Actions, derive repo name from GITHUB_REPOSITORY
-  //   and use '/repo-name/' unless it's a user site (repo endsWith '.github.io')
-  // - Default to '/' for local dev
-  base:
-    process.env.VITE_BASE || (() => {
-      const repo = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split('/')[1] : "";
-      if (!repo) return '/';
-      if (repo.endsWith('.github.io')) return '/';
-      return `/${repo}/`;
-    })(),
+  // Base handling:
+  // - Use VITE_BASE if explicitly provided
+  // - On GitHub Actions use relative base ('./') so assets load correctly on Pages
+  // - Local dev uses '/'
+  base: process.env.VITE_BASE || (process.env.GITHUB_ACTIONS ? './' : '/'),
   plugins,
   resolve: {
     alias: {
