@@ -23,8 +23,9 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v3
+        # 移除原本的 version: 8 或 10，改用下面這行
         with:
-          version: 8 # 確保這與你本地開發的版本相近
+          run_install: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
